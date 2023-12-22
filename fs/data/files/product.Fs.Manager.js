@@ -69,4 +69,5 @@ manager.create({
 
 manager.pathData(path);
 manager.read(path);
-console.log(manager.readOnId(2));
+console.log(manager.readOnId(2)); 
+// console logs
