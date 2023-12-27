@@ -1,8 +1,8 @@
 const fs = require("fs");
-
+//class UserManager y static
 class UserManager {
   static userManager = [];
-
+//create con array data dentro
   create(data) {
     const Users = {
       id:
@@ -13,7 +13,7 @@ class UserManager {
             ].id + 1,
       title: data.title,
       photo: data.photo,
-      email : data.email,
+      email: data.email,
     };
     UserManager.userManager.push(Users);
   }
@@ -26,21 +26,21 @@ class UserManager {
         2
       );
       fs.writeFileSync(path, jsonData, "utf-8");
-      console.log("Successfully create");
+      console.log("Successfully created");
     } catch (error) {
-      console.error("An error has ocurred:", error);
+      console.error("An error has occurred:", error);
     }
   }
-
+//metodo read
   read(path) {
     try {
       const readFiles = JSON.parse(fs.readFileSync(path, "utf-8"));
       console.log(readFiles);
     } catch (error) {
-      console.error("Not found Products!:", error);
+      console.error("Not found Users!:", error);
     }
   }
-
+// metodo read por id
   readOnId(id) {
     const foundUser = UserManager.userManager.find(
       (user) => user.id === id
@@ -51,17 +51,16 @@ class UserManager {
 
 const path = "./fs/data/files/user.fs.json";
 
-
 const manager = new UserManager();
 manager.create({
-  name: "title",
+  title: "title", 
   photo: "photo",
-  email: "example@example.com"
+  email: "example@example.com",
 });
 manager.create({
-  name: "title2",
+  title: "title2",
   photo: "photo2",
-  email: "example@example.com"
+  email: "example@example.com",
 });
 
 manager.pathData(path);
