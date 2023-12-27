@@ -1,11 +1,13 @@
 [
   {
     "id": 1,
+    "title": "title",
     "photo": "photo",
     "email": "example@example.com"
   },
   {
     "id": 2,
+    "title": "title2",
     "photo": "photo2",
     "email": "example@example.com"
   }
