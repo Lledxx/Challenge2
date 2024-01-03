@@ -12,5 +12,12 @@
     "photo": "Photo",
     "price": 250,
     "stock": 50
+  },
+  {
+    "id": "ca9883b31ff1623678d9586a",
+    "title": "Product",
+    "photo": "Photo",
+    "price": 250,
+    "stock": 50
   }
 ]
