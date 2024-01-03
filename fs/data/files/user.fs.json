@@ -1,12 +1,8 @@
 [
   {
-    "id": 1,
-    "photo": "photo",
-    "email": "example@example.com"
-  },
-  {
-    "id": 2,
-    "photo": "photo2",
-    "email": "example@example.com"
+    "id": "4fc24095fac04a4d72270e3f",
+    "name": "Example",
+    "photo": "Example.jpg",
+    "email": "Example@example.com"
   }
 ]

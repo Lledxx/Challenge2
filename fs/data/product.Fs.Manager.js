@@ -1,5 +1,7 @@
-const fs = require("fs");
-const crypto = require("crypto");
+import fs from 'fs';
+import crypto from 'crypto';
+
+
 
 class ProductManager {
   static #prodManager = [];
@@ -13,7 +15,7 @@ class ProductManager {
       ProductManager.#prodManager = JSON.parse(
         fs.readFileSync(this.path, "utf-8")
       );
-    }
+    } 
   }
 
   constructor(path) {
@@ -103,20 +105,21 @@ class ProductManager {
   }
 }
 
-const products = new ProductManager("./fs/files/products.fs.json");
-
+const products = new ProductManager("./files/products.fs.json");
+//array
 products.create({
   title: "Product",
   photo: "Photo",
   price: 250,
   stock: 50,
 });
-
+//funciones
 async function manage() {
   await products.read();
-  await products.readOne("your-product-id-here");
-  await products.readOne("another-product-id-here");
-  await products.destroy("product-id-to-destroy");
+  const createdProduct = await products.readOne();  
+  await products.readOne(createdProduct.id);
+  await products.destroy(createdProduct.id);
 }
+
 
 manage();

@@ -1,16 +1,16 @@
 [
   {
-    "id": 1,
-    "title": "title",
-    "photo": "photo",
+    "id": "9253558dace38c13010e2034",
+    "title": "Product",
+    "photo": "Photo",
     "price": 250,
     "stock": 50
   },
   {
-    "id": 2,
-    "title": "title2",
-    "photo": "photo2",
-    "price": 150,
-    "stock": 15
+    "id": "da8f6d3618a8c2428b5604fb",
+    "title": "Product",
+    "photo": "Photo",
+    "price": 250,
+    "stock": 50
   }
 ]

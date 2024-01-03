@@ -1,6 +1,6 @@
-const fs = require("fs");
-const crypto = require("crypto");
-const { Console } = require("console");
+import fs from 'fs';
+import crypto from 'crypto';
+
 
 class UserManager {
   static #Users = [];
@@ -48,7 +48,7 @@ class UserManager {
       if (UserManager.#Users.length === 0) {
         throw new Error("User not found");
       } else {
-        Console.log(UserManager.#Users);
+        console.log(UserManager.#Users);
         return UserManager.#Users;
       }
     } catch (error) {
@@ -98,7 +98,7 @@ class UserManager {
   }
 }
 
-const users = new UserManager("./data/fs/files/users.json");
+const users = new UserManager("./files/user.fs.json");
 
 
 users.create({
@@ -107,10 +107,11 @@ users.create({
   email: "Example@example.com",
 });
 
-async function userManager() {
+async function manage() {
   await users.read();
-  await users.readOne("0102ae2873909d5408a43154");
-  await users.destroy("0102ae2873909d5408a43154");
+  const createdUser = await users.readOne();  
+  await users.readOne(createdUser.id);
+  await users.destroy(createdUser.id);
 }
 
-userManager();
+manage();
