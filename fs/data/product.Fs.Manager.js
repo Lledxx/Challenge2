@@ -1,75 +1,122 @@
 const fs = require("fs");
-//class ProductManager y static
-class ProductManager {
-  static prodManager = [];
-//create con el array dentro
-  create(data) {
-    const Products = {
-      id:
-        ProductManager.prodManager.length === 0
-          ? 1
-          : ProductManager.prodManager[
-              ProductManager.prodManager.length - 1
-            ].id + 1,
-      title: data.title,
-      photo: data.photo,
-      price: data.price,
-      stock: data.stock || null,
-    };
-    ProductManager.prodManager.push(Products);
-  }
+const crypto = require("crypto");
 
-  pathData(path) {
-    try {
-      const jsonData = JSON.stringify(
-        ProductManager.prodManager,
-        null,
-        2
+class ProductManager {
+  static #prodManager = [];
+
+  init() {
+    const exists = fs.existsSync(this.path);
+    console.log(exists);
+    if (!exists) {
+      fs.writeFileSync(this.path, JSON.stringify([], null, 2));
+    } else {
+      ProductManager.#prodManager = JSON.parse(
+        fs.readFileSync(this.path, "utf-8")
       );
-      fs.writeFileSync(path, jsonData, "utf-8");
-      console.log("Successfully created");
-    } catch (error) {
-      console.error("An error occurred:", error);
     }
   }
-//metodo read
-  read(path) {
+
+  constructor(path) {
+    this.path = path;
+    this.init();
+  }
+
+  async create(data) {
     try {
-      if (fs.existsSync(path)) {
-        const readFiles = JSON.parse(fs.readFileSync(path, "utf-8"));
-        console.log(readFiles);
+      if (!data.title || !data.photo || !data.price || !data.stock) {
+        throw new Error("Title, photo, price, and stock are required");
       } else {
-        console.error("File not found:", path);
+        const newProduct = {
+          id: crypto.randomBytes(12).toString("hex"),
+          title: data.title,
+          photo: data.photo,
+          price: data.price,
+          stock: data.stock,
+        };
+
+        ProductManager.#prodManager.push(newProduct);
+
+        await fs.promises.writeFile(
+          this.path,
+          JSON.stringify(ProductManager.#prodManager, null, 2)
+        );
+        console.log(newProduct.id);
+        return newProduct;
       }
     } catch (error) {
-      console.error("Error reading file:", error);
+      console.error(error.message);
+      return error.message;
     }
   }
-//metodo read por id
-  readOnId(id) {
-    const foundProduct = ProductManager.prodManager.find(
-      (product) => product.id === id
-    );
-    return foundProduct || null;
+
+  read() {
+    try {
+      if (ProductManager.#prodManager.length === 0) {
+        throw new Error("Product not found");
+      } else {
+        console.log(ProductManager.#prodManager);
+        return ProductManager.#prodManager;
+      }
+    } catch (error) {
+      console.log(error.message);
+      return error.message;
+    }
+  }
+
+  readOne(id) {
+    try {
+      const product = ProductManager.#prodManager.find(
+        (each) => each.id === id
+      );
+      if (product) {
+        console.log(product);
+        return product;
+      } else {
+        throw new Error("Product not found");
+      }
+    } catch (error) {
+      console.log(error.message);
+      return error.message;
+    }
+  }
+
+  async destroy(id) {
+    try {
+      const product = ProductManager.#prodManager.find(
+        (each) => each.id === id
+      );
+      if (product) {
+        ProductManager.#prodManager = ProductManager.#prodManager.filter(
+          (each) => each.id !== id
+        );
+        await fs.promises.writeFile(
+          this.path,
+          JSON.stringify(ProductManager.#prodManager, null, 2)
+        );
+      } else {
+        throw new Error("Product not found");
+      }
+    } catch (error) {
+      console.log(error.message);
+      return error.message;
+    }
   }
 }
-//path del archivo json
-const path = "./fs/data/files/products.fs.json";
 
-const manager = new ProductManager();
-manager.create({
-  title: "title",
-  photo: "photo",
+const products = new ProductManager("./fs/files/products.fs.json");
+
+products.create({
+  title: "Product",
+  photo: "Photo",
   price: 250,
   stock: 50,
 });
-manager.create({
-  title: "title2",
-  photo: "photo2",
-  price: 150,
-  stock: 15,
-});
 
-manager.pathData(path);
-manager.read(path);
-console.log(manager.readOnId(2));
+async function manage() {
+  await products.read();
+  await products.readOne("your-product-id-here");
+  await products.readOne("another-product-id-here");
+  await products.destroy("product-id-to-destroy");
+}
+
+manage();

@@ -1,69 +1,116 @@
 const fs = require("fs");
+const crypto = require("crypto");
+const { Console } = require("console");
 
 class UserManager {
-  static userManager = [];
+  static #Users = [];
 
-  create(data) {
-    const Users = {
-      id:
-        UserManager.userManager.length === 0
-          ? 1
-          : UserManager.userManager[
-              UserManager.userManager.length - 1
-            ].id + 1,
-      title: data.title,
-      photo: data.photo,
-      email : data.email,
-    };
-    UserManager.userManager.push(Users);
+  constructor(path) {
+    this.path = path;
+    this.init();
   }
 
-  pathData(path) {
-    try {
-      const jsonData = JSON.stringify(
-        UserManager.userManager,
-        null,
-        2
-      );
-      fs.writeFileSync(path, jsonData, "utf-8");
-      console.log("Successfully create");
-    } catch (error) {
-      console.error("An error has ocurred:", error);
+  init() {
+    const exists = fs.existsSync(this.path);
+    console.log(exists);
+    if (!exists) {
+      fs.writeFileSync(this.path, JSON.stringify([], null, 2));
+    } else {
+      UserManager.#Users = JSON.parse(fs.readFileSync(this.path, "utf-8"));
     }
   }
 
-  read(path) {
+  async create(data) {
     try {
-      const readFiles = JSON.parse(fs.readFileSync(path, "utf-8"));
-      console.log(readFiles);
+      if (!data.name || !data.photo || !data.email) {
+        throw new Error("Name, photo, and email are required");
+      }
+
+      const newUser = {
+        id: crypto.randomBytes(12).toString("hex"),
+        name: data.name,
+        photo: data.photo,
+        email: data.email,
+      };
+      UserManager.#Users.push(newUser);
+
+      await this.writeFile(); 
+      console.log(newUser.id);
+      return newUser;
     } catch (error) {
-      console.error("Not found Products!:", error);
+      console.error(error.message);
+      return error.message;
     }
   }
 
-  readOnId(id) {
-    const foundUser = UserManager.userManager.find(
-      (user) => user.id === id
+  read() {
+    try {
+      if (UserManager.#Users.length === 0) {
+        throw new Error("User not found");
+      } else {
+        Console.log(UserManager.#Users);
+        return UserManager.#Users;
+      }
+    } catch (error) {
+      console.log(error.message);
+      return error.message;
+    }
+  }
+
+  readOne(id) {
+    try {
+      const user = UserManager.#Users.find((each) => each.id === id);
+      if (user) {
+        console.log(user);
+        return user;
+      } else {
+        throw new Error("User not found");
+      }
+    } catch (error) {
+      console.log(error.message);
+      return error.message;
+    }
+  }
+
+  destroy(id) {
+    try {
+      const remainingUsers = UserManager.#Users.filter((each) => each.id !== id);
+      if (remainingUsers.length < UserManager.#Users.length) {
+        fs.promises.writeFile(
+          this.path,
+          JSON.stringify(remainingUsers, null, 2)
+        );
+        console.log("The user has been deleted");
+      } else {
+        throw new Error("User not found");
+      }
+    } catch (error) {
+      console.log(error.message);
+      return error.message;
+    }
+  }
+
+  async writeFile() {
+    await fs.promises.writeFile(
+      this.path,
+      JSON.stringify(UserManager.#Users, null, 2)
     );
-    return foundUser || null;
   }
 }
 
-const path = "./fs/data/files/user.fs.json";
+const users = new UserManager("./data/fs/files/users.json");
 
 
-const manager = new UserManager();
-manager.create({
-  name: "title",
-  photo: "photo",
-  email: "example@example.com"
-});
-manager.create({
-  name: "title2",
-  photo: "photo2",
-  email: "example@example.com"
+users.create({
+  name: "Example",
+  photo: "Example.jpg",
+  email: "Example@example.com",
 });
 
-manager.pathData(path);
-manager.read(path);
-console.log(manager.readOnId(2));
+async function userManager() {
+  await users.read();
+  await users.readOne("0102ae2873909d5408a43154");
+  await users.destroy("0102ae2873909d5408a43154");
+}
+
+userManager();
