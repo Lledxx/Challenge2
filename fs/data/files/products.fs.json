@@ -1,16 +1,37 @@
 [
   {
-    "id": 1,
-    "title": "title",
-    "photo": "photo",
+    "id": "130a0d05cfa797f04ad1ff01",
+    "title": "Product",
+    "photo": "Photo",
     "price": 250,
     "stock": 50
   },
   {
-    "id": 2,
-    "title": "title2",
-    "photo": "photo2",
-    "price": 150,
-    "stock": 15
+    "id": "cf602e683187b4e8b34b2c1c",
+    "title": "Product",
+    "photo": "Photo",
+    "price": 250,
+    "stock": 50
+  },
+  {
+    "id": "c915c54ca6a771d59ecce770",
+    "title": "Product",
+    "photo": "Photo",
+    "price": 250,
+    "stock": 50
+  },
+  {
+    "id": "915d77da09199ce65fc7380f",
+    "title": "Product",
+    "photo": "Photo",
+    "price": 250,
+    "stock": 50
+  },
+  {
+    "id": "0856b096d38963011cd6380c",
+    "title": "Product",
+    "photo": "Photo",
+    "price": 250,
+    "stock": 50
   }
 ]
