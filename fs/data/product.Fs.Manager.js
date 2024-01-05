@@ -6,16 +6,19 @@ import crypto from 'crypto';
 class ProductManager {
   static #prodManager = [];
 
+ 
   init() {
-    const exists = fs.existsSync(this.path);
-    console.log(exists);
-    if (!exists) {
-      fs.writeFileSync(this.path, JSON.stringify([], null, 2));
-    } else {
-      ProductManager.#prodManager = JSON.parse(
-        fs.readFileSync(this.path, "utf-8")
-      );
-    } 
+    try {
+      const exists = fs.existsSync(this.path);
+      if (!exists) {
+        const data = JSON.stringify([], null, 2);
+        fs.writeFileSync(this.path, data);
+      } else {
+        ProductManager.#prodManager = JSON.parse(fs.readFileSync(this.path, "utf-8"));
+      }
+    } catch (error) {
+      console.error(error.message);
+    }
   }
 
   constructor(path) {
@@ -99,27 +102,19 @@ class ProductManager {
         throw new Error("Product not found");
       }
     } catch (error) {
-      console.log(error.message);
+      console.error(error.message);
       return error.message;
     }
   }
 }
 
-const products = new ProductManager("./files/products.fs.json");
-//array
+const products = new ProductManager("fs/data/files/products.fs.json");
+
 products.create({
   title: "Product",
   photo: "Photo",
   price: 250,
   stock: 50,
 });
-//funciones
-async function manage() {
-  await products.read();
-  const createdProduct = await products.readOne();  
-  await products.readOne(createdProduct.id);
-  await products.destroy(createdProduct.id);
-}
 
-
-manage();
+export default products;
