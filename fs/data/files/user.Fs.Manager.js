@@ -49,7 +49,7 @@ class UserManager {
   }
 }
 
-const path = "./fs/data/files/user.fs.json";
+const path = "./user.fs.json";
 
 const manager = new UserManager();
 manager.create({

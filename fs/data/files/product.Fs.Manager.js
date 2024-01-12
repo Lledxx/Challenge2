@@ -54,7 +54,7 @@ class ProductManager {
   }
 }
 //path del archivo json
-const path = "./fs/data/files/products.fs.json";
+const path = "./products.fs.json";
 
 const manager = new ProductManager();
 manager.create({
